@@ -1,7 +1,9 @@
 <html>
     <head>
         <script type="text/javascript" src="/lib/jquery-3.1.1.min.js"></script>
+        <script language='javascript' src='/js/popup.js'></script>
     </head>
+    <title>ChRomeTC</title>
     
     <div id="inputs">
         <form>
@@ -9,8 +11,14 @@
             <input type="text", name="busStopCode"><br>
             Bus number:<br>
             <input type="text", name="busNumber"><br>
-            <input type="submit" value="Submit">
+            <input type="submit" value="Save">
         </form>
     </div>
+        <form name='updateForm'>
+            <input type='button' id='updateButton' value='Update now'>
+        </form>
+        
+        <input type="text" value="" id="populateme" name="populateme" />
+        
         
 </html>
