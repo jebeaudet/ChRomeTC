@@ -6,12 +6,12 @@ function start() {
 
 function registerEvents() {
     document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById("updateButton").addEventListener("click", updateButton);
+        document.getElementById("refreshAllButton").addEventListener("click", refreshBusRoutesTable);
         document.getElementById("busTimesTab").addEventListener("click", openBusTimesTab);
         document.getElementById("configTab").addEventListener("click", openConfigTab);
         document.getElementById("saveButton").addEventListener("click", saveButtonAction);
         openBusTimesTab();
-        updateButton();
+        refreshBusRoutesTable();
     });
 }
 
@@ -29,56 +29,63 @@ function saveButtonAction() {
     populateSavedRoutesTable();
 }
 
-function updateButton() {
-    $.get("https://wsmobile.rtcquebec.ca/api/v1/horaire/BorneVirtuelle_ArretParcours?source=sitemobile&noArret=1816&noParcours=11&codeDirection=2&date=20170129", function(data) {
-        clearTable("tableOutput"); 
-        if (data.horaires.length > 0) {
-            var timeTd;
-            var liveImg;
-            
-            var tr = document.createElement("TR");
-            var resultTable = document.getElementById("tableOutput")
-            var numberOfResult = data.horaires.length;
+function refreshBusRoutesTable() {
+    clearTable("tableOutput"); 
 
-            var numberTd = document.createElement("TD");
-            var stopTd = document.createElement("TD");
-            var directionTd = document.createElement("TD");
-            numberTd.rowSpan =  stopTd.rowSpan = directionTd.rowSpan = numberOfResult;
+    var savedRoutes = getSavedRoutesFromLocalStorage();
 
-            numberTd.appendChild(document.createTextNode(data.parcours.noParcours));
-            stopTd.appendChild(document.createTextNode(data.arret.nom));
-            directionTd.appendChild(document.createTextNode(getDirectionFromCodeDirection(data.parcours.codeDirection)));
+    for (i = 0; i < savedRoutes.length; i++) {
+        var savedRoute = savedRoutes[i];
+        var url = "https://wsmobile.rtcquebec.ca/api/v1/horaire/BorneVirtuelle_ArretParcours?source=sitemobile&noArret=" + savedRoute.stopCode + "&noParcours=" + savedRoute.busNumber + "&codeDirection=" + getDirectionCodeFromDirection(savedRoute.direction) + "&date=" + getFormatedTodayDate();
+        $.get(url, function(data) {
+            if (data.horaires.length > 0) {
+                var timeTd;
+                var liveImg;
+                
+                var tr = document.createElement("TR");
+                var resultTable = document.getElementById("tableOutput")
+                var numberOfResult = data.horaires.length;
 
-            tr.appendChild(numberTd);
-            tr.appendChild(stopTd);
-            tr.appendChild(directionTd);
+                var numberTd = document.createElement("TD");
+                var stopTd = document.createElement("TD");
+                var directionTd = document.createElement("TD");
+                numberTd.rowSpan =  stopTd.rowSpan = directionTd.rowSpan = numberOfResult;
 
-            i = 0;
-            do {
-                timeTd = document.createElement("TD");
+                numberTd.appendChild(document.createTextNode(data.parcours.noParcours));
+                stopTd.appendChild(document.createTextNode(data.arret.nom));
+                directionTd.appendChild(document.createTextNode(getDirectionFromCodeDirection(data.parcours.codeDirection)));
 
-                timeTd.appendChild(document.createTextNode(data.horaires[i].departMinutes + "m"));
+                tr.appendChild(numberTd);
+                tr.appendChild(stopTd);
+                tr.appendChild(directionTd);
 
-                liveImg = document.createElement("img");
-                if (data.horaires[i].ntr) {
-                    liveImg.src = "img/live.png";
-                    liveImg.title = "Realtime";
-                } else {
-                    liveImg.src = "img/not_live.png";
-                    liveImg.title = "Scheduled";
-                }
-                liveImg.height = 20;
-                liveImg.width = 20;
-                timeTd.appendChild(liveImg);
+                i = 0;
+                do {
+                    timeTd = document.createElement("TD");
 
-                tr.appendChild(timeTd);
+                    timeTd.appendChild(document.createTextNode(data.horaires[i].departMinutes + "m"));
 
-                resultTable.appendChild(tr);
-                i++;
-                tr = document.createElement("TR");
-            } while (i < numberOfResult);
-        }
-    }, "json");
+                    liveImg = document.createElement("img");
+                    if (data.horaires[i].ntr) {
+                        liveImg.src = "img/live.png";
+                        liveImg.title = "Realtime";"https://wsmobile.rtcquebec.ca/api/v1/horaire/BorneVirtuelle_ArretParcours?source=sitemobile&noArret=1816&noParcours=11&codeDirection=2&date=20170130"
+                    } else {
+                        liveImg.src = "img/not_live.png";
+                        liveImg.title = "Scheduled";
+                    }
+                    liveImg.height = 20;
+                    liveImg.width = 20;
+                    timeTd.appendChild(liveImg);
+
+                    tr.appendChild(timeTd);
+
+                    resultTable.appendChild(tr);
+                    i++;
+                    tr = document.createElement("TR");
+                } while (i < numberOfResult);
+            }
+        }, "json");
+    }
 }
 
 function populateSavedRoutesTable() {
@@ -141,6 +148,31 @@ function getSavedRoutesFromLocalStorage() {
     return savedRoutes;
 }
 
+function getFormatedTodayDate() {
+    //20170130
+    var today = new Date();
+    return today.getFullYear().toString() + today.getMonth().toString() + today.getDay().toString();
+}
+
+function getDirectionCodeFromDirection(direction) {
+    var codeDirection;
+    switch (direction) {
+        case "North":
+            codeDirection = 0;
+            break;
+        case "South":
+            codeDirection = 1;
+            break;
+        case "East":
+            codeDirection = 2;
+            break;
+        case "West":
+            codeDirection = 3;
+            break;
+    }
+    return codeDirection;
+}
+
 function getDirectionFromCodeDirection(codeDirection) {
     var direction;
     switch (codeDirection) {
@@ -171,20 +203,6 @@ function openConfigTab(event) {
     populateSavedRoutesTable();
 }
 
-function hide(elements) {
-    elements = elements.length ? elements : [elements];
-    for (var index = 0; index < elements.length; index++) {
-        elements[index].style.display = "none";
-    }
-}
-
-function show(elements, specifiedDisplay) {
-    elements = elements.length ? elements : [elements];
-    for (var index = 0; index < elements.length; index++) {
-        elements[index].style.display = specifiedDisplay || "block";
-    }
-}
-
 function getGuid() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
         var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -197,7 +215,21 @@ function clearTable(tableId) {
     var tableRows = elmtTable.getElementsByTagName('tr');
     var rowCount = tableRows.length;
 
-    for (var x=rowCount-1; x>0; x--) {
+    for (var x = rowCount-1; x > 0; x--) {
        elmtTable.removeChild(tableRows[x]);
+    }
+}
+
+function hide(elements) {
+    elements = elements.length ? elements : [elements];
+    for (var index = 0; index < elements.length; index++) {
+        elements[index].style.display = "none";
+    }
+}
+
+function show(elements, specifiedDisplay) {
+    elements = elements.length ? elements : [elements];
+    for (var index = 0; index < elements.length; index++) {
+        elements[index].style.display = specifiedDisplay || "block";
     }
 }
