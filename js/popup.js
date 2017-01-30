@@ -55,6 +55,9 @@ function refreshBusRoutesTable() {
                 stopTd.appendChild(document.createTextNode(data.arret.nom));
                 directionTd.appendChild(document.createTextNode(getDirectionFromCodeDirection(data.parcours.codeDirection)));
 
+                stopTd.title = data.arret.description;
+                directionTd.title = data.parcours.descriptionDirection;
+
                 tr.appendChild(numberTd);
                 tr.appendChild(stopTd);
                 tr.appendChild(directionTd);
@@ -76,6 +79,7 @@ function refreshBusRoutesTable() {
                     liveImg.height = 20;
                     liveImg.width = 20;
                     timeTd.appendChild(liveImg);
+                    timeTd.title = data.horaires[i].depart;
 
                     tr.appendChild(timeTd);
 
