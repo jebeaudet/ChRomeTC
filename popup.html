@@ -1,24 +1,64 @@
-<html>
-    <head>
-        <script type="text/javascript" src="/lib/jquery-3.1.1.min.js"></script>
-        <script language='javascript' src='/js/popup.js'></script>
-    </head>
-    <title>ChRomeTC</title>
-    
-    <div id="inputs">
-        <form>
-            Bus stop code:<br>
-            <input type="text", name="busStopCode"><br>
-            Bus number:<br>
-            <input type="text", name="busNumber"><br>
-            <input type="submit" value="Save">
-        </form>
-    </div>
-        <form name='updateForm'>
-            <input type='button' id='updateButton' value='Update now'>
-        </form>
-        
-        <input type="text" value="" id="populateme" name="populateme" />
-        
-        
+<html style="min-width:400px; padding: 0px 5 5 5">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="css/siimple.min.css">
+    <link rel="stylesheet" type="text/css" href="css/tab.css">
+    <link rel="stylesheet" type="text/css" href="css/table.css">
+    <script type="text/javascript" src="/lib/jquery-3.1.1.min.js"></script>
+    <script language='javascript' src='/js/popup.js'></script>
+</head>
+<title>ChRomeTC</title>
+
+<ul class="tab">
+    <li id="busTimesTab">
+        <a class="tablinks">
+            <img src="img/bus_times.png" style="width:30px;height:30px;">
+        </a>
+    </li>
+    <li id="configTab">
+        <a class="tablinks">
+            <img src="img/cog.png" style="width:30px;height:30px;">
+        </a>
+    </li>
+</ul>
+
+<div id="inputs">
+    <form>
+        <h4> Add new saved route</h4>
+        Bus stop code:<br>
+        <input type="number" style="width:50%" class="form-input" id="busStopCode"><br> 
+        Bus number:<br>
+        <input type="number" style="width:50%" class="form-input" id="busNumber"><br> Direction:
+        <br>
+        <select id="busDirection" style="width:50%" class="form-select">
+                <option >North</option>
+                <option>South</option>
+                <option>East</option>
+                <option>West</option>
+            </select>
+        <input id="saveButton" type="submit" class="form-input" value="Save">
+    </form>
+    <table class="table" id="savedRoutes">
+        <thead>
+            <th/>
+            <th><img src="img/bus_number.png" style="width:20px;height:20px;" title="Bus number"></th>
+            <th><img src="img/bus_stop.png" style="width:20px;height:20px;" title="Bus stop description and number"></th>
+            <th><img src="img/compass.png" style="width:20px;height:20px;" title="Direction"></th>
+        </thead>
+    </table>
+</div>
+
+<div id="outputs">
+    <table class="table" id="tableOutput">
+        <thead>
+            <th><img src="img/bus_number.png" style="width:20px;height:20px;" title="Bus number"></th>
+            <th><img src="img/bus_stop.png" style="width:20px;height:20px;" title="Bus stop description and number"></th>
+            <th><img src="img/compass.png" style="width:20px;height:20px;" title="Direction"></th>
+            <th><img src="img/clock.png" style="width:20px;height:20px;" title="Time of arrival"></th>
+        </thead>
+    </table>
+    <form name='updateForm'>
+        <input type='button' class="btn btn-small" id='updateButton' value='Update all now'>
+    </form>
+
 </html>
