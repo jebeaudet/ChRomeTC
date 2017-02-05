@@ -36,7 +36,7 @@ function refreshBusRoutesTable() {
 
     for (i = 0; i < savedRoutes.length; i++) {
         var savedRoute = savedRoutes[i];
-        var url = "https://wsmobile.rtcquebec.ca/api/v1/horaire/BorneVirtuelle_ArretParcours?source=sitemobile&noArret=" + savedRoute.stopCode + "&noParcours=" + savedRoute.busNumber + "&codeDirection=" + getDirectionCodeFromDirection(savedRoute.direction) + "&date=" + getFormatedTodayDate();
+        var url = "https://wsmobile.rtcquebec.ca/api/v1/horaire/BorneVirtuelle_ArretParcours?source=sitemobile&noArret=" + savedRoute.stopCode + "&noParcours=" + savedRoute.busNumber + "&codeDirection=" + directionToCodeMap.get(savedRoute.direction) + "&date=" + getFormatedTodayDate();
         $.get(url, function(data) {
             if (data.horaires.length > 0) {
                 var timeTd;
@@ -53,7 +53,7 @@ function refreshBusRoutesTable() {
 
                 numberTd.appendChild(document.createTextNode(data.parcours.noParcours));
                 stopTd.appendChild(document.createTextNode(data.arret.nom));
-                directionTd.appendChild(document.createTextNode(getDirectionFromCodeDirection(data.parcours.codeDirection)));
+                directionTd.appendChild(document.createTextNode(codeToDirectionMap.get(data.parcours.codeDirection)));
 
                 stopTd.title = data.arret.description;
                 directionTd.title = data.parcours.descriptionDirection;
@@ -66,12 +66,12 @@ function refreshBusRoutesTable() {
                 do {
                     timeTd = document.createElement("TD");
 
-                    timeTd.appendChild(document.createTextNode(data.horaires[i].departMinutes + "m"));
+                    timeTd.appendChild(document.createTextNode(data.horaires[i].departMinutes + "m "));
 
                     liveImg = document.createElement("img");
                     if (data.horaires[i].ntr) {
                         liveImg.src = "img/live.png";
-                        liveImg.title = "Realtime";"https://wsmobile.rtcquebec.ca/api/v1/horaire/BorneVirtuelle_ArretParcours?source=sitemobile&noArret=1816&noParcours=11&codeDirection=2&date=20170130"
+                        liveImg.title = "Realtime";
                     } else {
                         liveImg.src = "img/not_live.png";
                         liveImg.title = "Scheduled";
@@ -114,6 +114,7 @@ function populateSavedRoutesTable() {
             deleteImg.src = "img/x.png";
             deleteImg.height = 20;
             deleteImg.width = 20;
+            deleteImg.title = "Delete the saved route"
             imgLink.appendChild(deleteImg);
             deleteButtonTd.appendChild(imgLink);
             deleteButtonTd.id = savedRoutes[i].id;
@@ -158,52 +159,14 @@ function getFormatedTodayDate() {
     return today.getFullYear().toString() + today.getMonth().toString() + today.getDay().toString();
 }
 
-function getDirectionCodeFromDirection(direction) {
-    var codeDirection;
-    switch (direction) {
-        case "North":
-            codeDirection = 0;
-            break;
-        case "South":
-            codeDirection = 1;
-            break;
-        case "East":
-            codeDirection = 2;
-            break;
-        case "West":
-            codeDirection = 3;
-            break;
-    }
-    return codeDirection;
-}
-
-function getDirectionFromCodeDirection(codeDirection) {
-    var direction;
-    switch (codeDirection) {
-        case "0":
-            direction = "N";
-            break;
-        case "1":
-            direction = "S";
-            break;
-        case "2":
-            direction = "E";
-            break;
-        case "3":
-            direction = "W";
-            break;
-    }
-    return direction;
-}
-
 function openBusTimesTab(event) {
-    hide(document.getElementById("inputs"));
-    show(document.getElementById("outputs"));
+    $("#inputs").hide();
+    $("#outputs").show();
 }
 
 function openConfigTab(event) {
-    show(document.getElementById("inputs"));
-    hide(document.getElementById("outputs"));
+    $("#outputs").hide();
+    $("#inputs").show();
     populateSavedRoutesTable();
 }
 
@@ -221,19 +184,5 @@ function clearTable(tableId) {
 
     for (var x = rowCount-1; x > 0; x--) {
        elmtTable.removeChild(tableRows[x]);
-    }
-}
-
-function hide(elements) {
-    elements = elements.length ? elements : [elements];
-    for (var index = 0; index < elements.length; index++) {
-        elements[index].style.display = "none";
-    }
-}
-
-function show(elements, specifiedDisplay) {
-    elements = elements.length ? elements : [elements];
-    for (var index = 0; index < elements.length; index++) {
-        elements[index].style.display = specifiedDisplay || "block";
     }
 }
