@@ -36,12 +36,17 @@ function saveButtonAction() {
         savedRoutes.push(newSavedRoute);
         localStorage.setItem("savedRoutes",JSON.stringify(savedRoutes));
         populateSavedRoutesTable();
-        $("#busNumber").val("");
-        $("#busStopCode").val("");
+        resetInputs();
     } else {
         $(this).effect("shake", {distance:100});
         $("#errorMessage").show();
     }
+}
+
+function resetInputs() {
+    $("#busNumber").val("");
+    $("#busStopCode").val("");
+    $("#busDirection").val("North");
 }
 
 function validateDuplicate(newSavedRoute) {
@@ -235,6 +240,8 @@ function openConfigTab(event) {
     $("#outputs").hide();
     $("#inputs").show();
     populateSavedRoutesTable();
+    resetInputs();
+    $("#errorMessage").hide();
 }
 
 function getGuid() {
