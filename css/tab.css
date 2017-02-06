@@ -32,3 +32,9 @@ ul.tab li a:hover {background-color: #ddd;}
     border: 1px solid #ccc;
     border-top: none;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

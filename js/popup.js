@@ -10,23 +10,90 @@ function registerEvents() {
         document.getElementById("busTimesTab").addEventListener("click", openBusTimesTab);
         document.getElementById("configTab").addEventListener("click", openConfigTab);
         document.getElementById("saveButton").addEventListener("click", saveButtonAction);
+        document.getElementById("busNumber").addEventListener("click", resetToBlackColorInput);
+        document.getElementById("busStopCode").addEventListener("click", resetToBlackColorInput);
         openBusTimesTab();
-        refreshBusRoutesTable();
     });
 }
 
+function resetToBlackColorInput() {
+    this.style.color = "#000000";
+}
+
 function saveButtonAction() {
+     $("#errorMessage").hide();
     var newSavedRoute = {
         stopCode: document.getElementById("busStopCode").value,
         busNumber: document.getElementById("busNumber").value,
         direction: document.getElementById("busDirection").value,
         id: getGuid()
     }
-    
+
+    if(validateInputs(newSavedRoute) && validateRoute(newSavedRoute) && validateDuplicate(newSavedRoute)) {
+        document.getElementById("busNumber").style.color = "#000000";
+        document.getElementById("busStopCode").style.color = "#000000";
+        var savedRoutes = getSavedRoutesFromLocalStorage();
+        savedRoutes.push(newSavedRoute);
+        localStorage.setItem("savedRoutes",JSON.stringify(savedRoutes));
+        populateSavedRoutesTable();
+        $("#busNumber").val("");
+        $("#busStopCode").val("");
+    } else {
+        $(this).effect("shake", {distance:100});
+        $("#errorMessage").show();
+    }
+}
+
+function validateDuplicate(newSavedRoute) {
+    var valid = true;
     var savedRoutes = getSavedRoutesFromLocalStorage();
-    savedRoutes.push(newSavedRoute);
-    localStorage.setItem("savedRoutes",JSON.stringify(savedRoutes));
-    populateSavedRoutesTable();
+    for (i = 0; i < savedRoutes.length; i++) {
+        var savedRoute = savedRoutes[i];
+        if(savedRoute.busNumber == newSavedRoute.busNumber && savedRoute.stopCode == newSavedRoute.stopCode && savedRoute.direction == newSavedRoute.direction) {
+            valid = false;
+            break;
+        }
+    }
+    return valid;
+}
+
+function validateInputs(newSavedRoute) {
+    var valid = true;
+    if(newSavedRoute.busNumber < 1 || newSavedRoute.busNumber > 905) {
+        document.getElementById("busNumber").style.color = "#ff0000";
+        valid = false;
+    }
+    if(newSavedRoute.stopCode < 1 || newSavedRoute.stopCode > 100000) {
+        document.getElementById("busStopCode").style.color = "#ff0000";
+        valid = false;
+    }
+
+    return valid;
+}
+
+function validateRoute(newSavedRoute) {
+    var valid = true;
+    if(valid) {
+        jQuery.ajax({
+            url: getUrlFromSavedRoute(newSavedRoute),
+            error: function () {
+                valid = false;
+            },
+            async: false
+        });
+    }
+
+    return valid;
+}
+
+function getUrlFromSavedRoute(savedRoute) {
+    return "https://wsmobile.rtcquebec.ca/api/v1/horaire/BorneVirtuelle_ArretParcours?source=sitemobile&noArret=" 
+        + savedRoute.stopCode 
+        + "&noParcours=" 
+        + savedRoute.busNumber 
+        + "&codeDirection=" 
+        + directionToCodeMap.get(savedRoute.direction) 
+        + "&date=" + getFormatedTodayDate();
 }
 
 function refreshBusRoutesTable() {
@@ -36,7 +103,7 @@ function refreshBusRoutesTable() {
 
     for (i = 0; i < savedRoutes.length; i++) {
         var savedRoute = savedRoutes[i];
-        var url = "https://wsmobile.rtcquebec.ca/api/v1/horaire/BorneVirtuelle_ArretParcours?source=sitemobile&noArret=" + savedRoute.stopCode + "&noParcours=" + savedRoute.busNumber + "&codeDirection=" + directionToCodeMap.get(savedRoute.direction) + "&date=" + getFormatedTodayDate();
+        var url = getUrlFromSavedRoute(savedRoute);
         $.get(url, function(data) {
             if (data.horaires.length > 0) {
                 var timeTd;
@@ -154,14 +221,14 @@ function getSavedRoutesFromLocalStorage() {
 }
 
 function getFormatedTodayDate() {
-    //20170130
     var today = new Date();
-    return today.getFullYear().toString() + today.getMonth().toString() + today.getDay().toString();
+    return today.getFullYear().toString() + ("0" + today.getMonth()).slice(-2) + ("0" + today.getDate()).slice(-2);
 }
 
 function openBusTimesTab(event) {
     $("#inputs").hide();
     $("#outputs").show();
+    refreshBusRoutesTable();
 }
 
 function openConfigTab(event) {

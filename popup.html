@@ -1,4 +1,5 @@
-<html style="min-width:400px; padding: 0px 5 5 5">
+<!DOCTYPE html>
+<html id="pluginWindow" style="min-width:400px; padding: 5px 5 5 5">
 
 <head>
     <link rel="stylesheet" type="text/css" href="css/siimple.min.css">
@@ -6,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="css/table.css">
     <script language="javascript" src="/js/global.js"></script>
     <script type="text/javascript" src="/lib/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="/lib/jquery-ui.min.js"></script>
     <script language='javascript' src='/js/popup.js'></script>
 </head>
 <title>ChRomeTC</title>
@@ -26,18 +28,21 @@
 <div id="inputs">
     <form>
         <h4> Add new saved route</h4>
+        Bus number:<br>
+        <input type="number" style="width:50%" class="form-input" id="busNumber"><br> 
         Bus stop code:<br>
         <input type="number" style="width:50%" class="form-input" id="busStopCode"><br> 
-        Bus number:<br>
-        <input type="number" style="width:50%" class="form-input" id="busNumber"><br> Direction:
-        <br>
+        Direction:<br>
         <select id="busDirection" style="width:50%" class="form-select">
-                <option >North</option>
-                <option>South</option>
-                <option>East</option>
-                <option>West</option>
-            </select>
-        <input id="saveButton" type="submit" class="form-input" value="Save">
+            <option >North</option>
+            <option>South</option>
+            <option>East</option>
+            <option>West</option>
+        </select>
+        <input id="saveButton" type="button" class="form-input" value="Save"><br>
+        <div id="errorMessage" hidden=true style="color: #ff0000">
+            Invalid or duplicate route.
+        </div>
     </form>
     <table class="table" id="savedRoutes">
         <thead>
