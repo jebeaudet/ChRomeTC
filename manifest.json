@@ -3,7 +3,16 @@
 
 	"name": "ChRomeTC",
 	"description": "Get the real time delay before the next bus arrives.",
-	"version": "0.1",
+	"version": "1.0",
+
+	"homepage_url": "https://github.com/jebeaudet/ChRomeTC",
+
+	"icons": {
+		"16": "img/bus_16x16.png",
+		"32": "img/bus_32x32.png",
+		"48": "img/bus_48x48.png",
+		"128": "img/bus_128x128.png"
+	},
 
 	"browser_action": {
 		"default_icon": "img/bus_512x512.png",

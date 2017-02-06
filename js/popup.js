@@ -147,7 +147,7 @@ function refreshBusRoutesTable() {
                         liveImg.src = "img/live.png";
                         liveImg.title = "Realtime";
                     } else {
-                        liveImg.src = "img/not_live.png";
+                        liveImg.src = "img/clock.png";
                         liveImg.title = "Scheduled";
                     }
                     liveImg.height = 20;
