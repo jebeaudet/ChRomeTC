@@ -5,7 +5,7 @@ function start() {
 }
 
 function registerEvents() {
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("refreshAllButton").addEventListener("click", refreshBusRoutesTable);
         document.getElementById("busTimesTab").addEventListener("click", openBusTimesTab);
         document.getElementById("configTab").addEventListener("click", openConfigTab);
@@ -21,7 +21,7 @@ function resetToBlackColorInput() {
 }
 
 function saveButtonAction() {
-     $("#errorMessage").hide();
+    $("#errorMessage").hide();
     var newSavedRoute = {
         stopCode: document.getElementById("busStopCode").value,
         busNumber: document.getElementById("busNumber").value,
@@ -29,16 +29,18 @@ function saveButtonAction() {
         id: getGuid()
     }
 
-    if(validateInputs(newSavedRoute) && validateRoute(newSavedRoute) && validateDuplicate(newSavedRoute)) {
+    if (validateInputs(newSavedRoute) && validateRoute(newSavedRoute) && validateDuplicate(newSavedRoute)) {
         document.getElementById("busNumber").style.color = "#000000";
         document.getElementById("busStopCode").style.color = "#000000";
         var savedRoutes = getSavedRoutesFromLocalStorage();
         savedRoutes.push(newSavedRoute);
-        localStorage.setItem("savedRoutes",JSON.stringify(savedRoutes));
+        localStorage.setItem("savedRoutes", JSON.stringify(savedRoutes));
         populateSavedRoutesTable();
         resetInputs();
     } else {
-        $(this).effect("shake", {distance:100});
+        $(this).effect("shake", {
+            distance: 100
+        });
         $("#errorMessage").show();
     }
 }
@@ -54,7 +56,7 @@ function validateDuplicate(newSavedRoute) {
     var savedRoutes = getSavedRoutesFromLocalStorage();
     for (i = 0; i < savedRoutes.length; i++) {
         var savedRoute = savedRoutes[i];
-        if(savedRoute.busNumber == newSavedRoute.busNumber && savedRoute.stopCode == newSavedRoute.stopCode && savedRoute.direction == newSavedRoute.direction) {
+        if (savedRoute.busNumber == newSavedRoute.busNumber && savedRoute.stopCode == newSavedRoute.stopCode && savedRoute.direction == newSavedRoute.direction) {
             valid = false;
             break;
         }
@@ -64,11 +66,11 @@ function validateDuplicate(newSavedRoute) {
 
 function validateInputs(newSavedRoute) {
     var valid = true;
-    if(newSavedRoute.busNumber < 1 || newSavedRoute.busNumber > 905) {
+    if (newSavedRoute.busNumber < 1 || newSavedRoute.busNumber > 905) {
         document.getElementById("busNumber").style.color = "#ff0000";
         valid = false;
     }
-    if(newSavedRoute.stopCode < 1 || newSavedRoute.stopCode > 100000) {
+    if (newSavedRoute.stopCode < 1 || newSavedRoute.stopCode > 100000) {
         document.getElementById("busStopCode").style.color = "#ff0000";
         valid = false;
     }
@@ -78,7 +80,7 @@ function validateInputs(newSavedRoute) {
 
 function validateRoute(newSavedRoute) {
     var valid = true;
-    if(valid) {
+    if (valid) {
         jQuery.ajax({
             url: getUrlFromSavedRoute(newSavedRoute),
             error: function () {
@@ -92,28 +94,28 @@ function validateRoute(newSavedRoute) {
 }
 
 function getUrlFromSavedRoute(savedRoute) {
-    return "https://wsmobile.rtcquebec.ca/api/v1/horaire/BorneVirtuelle_ArretParcours?source=sitemobile&noArret=" 
-        + savedRoute.stopCode 
-        + "&noParcours=" 
-        + savedRoute.busNumber 
-        + "&codeDirection=" 
-        + directionToCodeMap.get(savedRoute.direction) 
-        + "&date=" + getFormatedTodayDate();
+    return "https://wsmobile.rtcquebec.ca/api/v1/horaire/BorneVirtuelle_ArretParcours?source=sitemobile&noArret=" +
+        savedRoute.stopCode +
+        "&noParcours=" +
+        savedRoute.busNumber +
+        "&codeDirection=" +
+        directionToCodeMap.get(savedRoute.direction) +
+        "&date=" + getFormatedTodayDate();
 }
 
 function refreshBusRoutesTable() {
-    clearTable("tableOutput"); 
+    clearTable("tableOutput");
 
     var savedRoutes = getSavedRoutesFromLocalStorage();
 
     for (i = 0; i < savedRoutes.length; i++) {
         var savedRoute = savedRoutes[i];
         var url = getUrlFromSavedRoute(savedRoute);
-        $.get(url, function(data) {
+        $.get(url, function (data) {
             if (data.horaires.length > 0) {
                 var timeTd;
                 var liveImg;
-                
+
                 var tr = document.createElement("TR");
                 var resultTable = document.getElementById("tableOutput")
                 var numberOfResult = data.horaires.length;
@@ -121,7 +123,7 @@ function refreshBusRoutesTable() {
                 var numberTd = document.createElement("TD");
                 var stopTd = document.createElement("TD");
                 var directionTd = document.createElement("TD");
-                numberTd.rowSpan =  stopTd.rowSpan = directionTd.rowSpan = numberOfResult;
+                numberTd.rowSpan = stopTd.rowSpan = directionTd.rowSpan = numberOfResult;
 
                 numberTd.appendChild(document.createTextNode(data.parcours.noParcours));
                 stopTd.appendChild(document.createTextNode(data.arret.nom));
@@ -167,8 +169,8 @@ function refreshBusRoutesTable() {
 function populateSavedRoutesTable() {
     clearTable("savedRoutes");
     var savedRoutes = getSavedRoutesFromLocalStorage();
-    
-    if(savedRoutes.length > 0) {
+
+    if (savedRoutes.length > 0) {
         var resultTable = document.getElementById("savedRoutes")
         for (i = 0; i < savedRoutes.length; i++) {
             var tr = document.createElement("TR");
@@ -206,20 +208,20 @@ function deleteSavedRoute() {
     console.log(this.id);
     var savedRoutes = getSavedRoutesFromLocalStorage();
     for (i = 0; i < savedRoutes.length; i++) {
-        if(savedRoutes[i].id == this.id) {
+        if (savedRoutes[i].id == this.id) {
             savedRoutes.splice(i, 1);
             break;
         }
     }
-    localStorage.setItem("savedRoutes",JSON.stringify(savedRoutes));
+    localStorage.setItem("savedRoutes", JSON.stringify(savedRoutes));
     populateSavedRoutesTable();
 }
 
 function getSavedRoutesFromLocalStorage() {
     var savedRoutes = localStorage.getItem("savedRoutes");
-    if(savedRoutes == undefined) { 
+    if (savedRoutes == undefined) {
         savedRoutes = new Array();
-    }else {
+    } else {
         savedRoutes = JSON.parse(savedRoutes);
     }
     return savedRoutes;
@@ -245,8 +247,9 @@ function openConfigTab(event) {
 }
 
 function getGuid() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
 }
@@ -256,7 +259,7 @@ function clearTable(tableId) {
     var tableRows = elmtTable.getElementsByTagName('tr');
     var rowCount = tableRows.length;
 
-    for (var x = rowCount-1; x > 0; x--) {
-       elmtTable.removeChild(tableRows[x]);
+    for (var x = rowCount - 1; x > 0; x--) {
+        elmtTable.removeChild(tableRows[x]);
     }
 }
