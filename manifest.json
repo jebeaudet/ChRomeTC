@@ -2,8 +2,8 @@
 	"manifest_version": 2,
 
 	"name": "ChRomeTC",
-	"description": "Get the real time delay before the next bus arrives.",
-	"version": "1.0",
+	"description": "Get the realtime delay before the next RTC bus arrives.",
+	"version": "1.0.1",
 
 	"homepage_url": "https://github.com/jebeaudet/ChRomeTC",
 
@@ -20,8 +20,6 @@
 	},
 
 	"permissions": [
-		"storage",
-		"http://*/*",
-		"https://*/*"
+		"storage"
 	]
 }
