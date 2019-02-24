@@ -1,7 +1,18 @@
 start();
 
+var noop = function(){};
+
 function start() {
+    initialSyncWithChromeSync();
     registerEvents();
+}
+
+function initialSyncWithChromeSync(){
+    chrome.storage.local.get(["savedRoutes"], function(result) {
+        if(result.key !== undefined){
+            localStorage.setItem("savedRoutes", result.key);
+        }
+    }); 
 }
 
 function registerEvents() {
@@ -12,7 +23,19 @@ function registerEvents() {
         document.getElementById("saveButton").addEventListener("click", saveButtonAction);
         document.getElementById("busNumber").addEventListener("click", resetToBlackColorInput);
         document.getElementById("busStopCode").addEventListener("click", resetToBlackColorInput);
+        registerChromeSyncCallback();
         openBusTimesTab();
+    });
+}
+
+function registerChromeSyncCallback(){
+    chrome.storage.onChanged.addListener(function(changes, namespace) {
+        for (var key in changes) {
+            if(key === "savedRoutes"){
+                var storageChange = changes[key];
+                localStorage.setItem("savedRoutes", storageChange.newValue["savedRoutes"]);
+            }
+        }
     });
 }
 
@@ -34,7 +57,7 @@ function saveButtonAction() {
         document.getElementById("busStopCode").style.color = "#000000";
         var savedRoutes = getSavedRoutesFromLocalStorage();
         savedRoutes.push(newSavedRoute);
-        localStorage.setItem("savedRoutes", JSON.stringify(savedRoutes));
+        saveToLocalStorageAndSync(savedRoutes);
         populateSavedRoutesTable();
         resetInputs();
     } else {
@@ -213,13 +236,19 @@ function deleteSavedRoute() {
             break;
         }
     }
-    localStorage.setItem("savedRoutes", JSON.stringify(savedRoutes));
+    saveToLocalStorageAndSync(savedRoutes);
     populateSavedRoutesTable();
+}
+
+function saveToLocalStorageAndSync(savedRoutes){
+    var routesAsString = JSON.stringify(savedRoutes);
+    localStorage.setItem("savedRoutes", routesAsString);
+    chrome.storage.sync.set({"savedRoutes": routesAsString}, noop);
 }
 
 function getSavedRoutesFromLocalStorage() {
     var savedRoutes = localStorage.getItem("savedRoutes");
-    if (savedRoutes == undefined) {
+    if (savedRoutes === "undefined") {
         savedRoutes = new Array();
     } else {
         savedRoutes = JSON.parse(savedRoutes);
