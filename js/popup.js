@@ -3,6 +3,7 @@ start();
 var noop = function(){};
 
 function start() {
+	localizeHtmlPage();
     initialSyncWithChromeSync();
     registerEvents();
 }
@@ -26,6 +27,26 @@ function registerEvents() {
         registerChromeSyncCallback();
         openBusTimesTab();
     });
+}
+
+function localizeHtmlPage()
+{
+    var objects = document.getElementsByTagName('html');
+    for (var j = 0; j < objects.length; j++)
+    {
+        var obj = objects[j];
+
+        var valStrH = obj.innerHTML.toString();
+        var valNewH = valStrH.replace(/__MSG_(\w+)__/g, function(match, v1)
+        {
+            return v1 ? chrome.i18n.getMessage(v1) : "";
+        });
+
+        if(valNewH != valStrH)
+        {
+            obj.innerHTML = valNewH;
+        }
+    }
 }
 
 function registerChromeSyncCallback(){
@@ -246,7 +267,7 @@ function saveToLocalStorageAndSync(savedRoutes){
 
 function getSavedRoutesFromLocalStorage() {
     var savedRoutes = localStorage.getItem("savedRoutes");
-    if (savedRoutes === "undefined") {
+    if (savedRoutes == null) {
         savedRoutes = new Array();
     } else {
         savedRoutes = JSON.parse(savedRoutes);
