@@ -1,5 +1,5 @@
 # ChRomeTC/FiReTC
-Chrome/Firefox extension for RTC Nomade.
+Chrome/Firefox extension for RTC Nomade. Currently, the chrome only extension support french localization and chrome sync.
 
 # How to install
 Use the [Chrome web store](https://chrome.google.com/webstore/detail/chrometc/ghonlpiinhagjnhgiohnnbajakcfohid) or [Firefox Add-ons Manager](https://addons.mozilla.org/en-US/firefox/addon/firetc/).
