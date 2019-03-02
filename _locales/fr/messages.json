@@ -1,5 +1,48 @@
 {
 	"refreshAllButtonLabel": {
 		"message": "Rafraîchir"
+	},
+
+	"addNewSavedRouteLabel": {
+		"message": " Ajouter un nouveau parcours"
+	},
+	"busNumberLabel": {
+		"message": "Numéro de parcours"
+	},
+	"busStopCodeLabel": {
+		"message": " Numéro d'arrêt"
+	},
+	"saveLabel": {
+		"message": "Sauvegarder"
+	},
+	"northLabel": {
+		"message": "Nord"
+	},
+	"southLabel": {
+		"message": "Sud"
+	},
+	"eastLabel": {
+		"message": "Est"
+	},
+	"westLabel": {
+		"message": "Ouest"
+	},
+	"westShortLabel": {
+		"message": "O"
+	},
+	"invalidRouteLabel": {
+		"message": "Parcours invalide ou dupliqué."
+	},
+	"busDescriptionAndNumberLabel": {
+		"message": "Description et numéro d'arrêt"
+	},
+	"timeOfArrivalLabel": {
+		"message": "Heure d'arrivée"
+	},
+	"realtimeLabel": {
+		"message": "Temps réel"
+	},
+	"scheduledLabel": {
+		"message": "Heure prévue"
 	}
 }

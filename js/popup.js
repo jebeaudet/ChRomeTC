@@ -3,17 +3,27 @@ start();
 var noop = function(){};
 
 function start() {
-	localizeHtmlPage();
     initialSyncWithChromeSync();
+	localizeHtmlPage();
     registerEvents();
 }
 
 function initialSyncWithChromeSync(){
-    chrome.storage.local.get(["savedRoutes"], function(result) {
-        if(result.key !== undefined){
-            localStorage.setItem("savedRoutes", result.key);
+    chrome.storage.sync.get(["savedRoutes"], function(result) {
+        if(result.savedRoutes){
+            localStorage.setItem("savedRoutes", result.savedRoutes);
         }
-    }); 
+        openBusTimesTab();
+    });
+    chrome.storage.sync.get(["initialized"], function(result) {
+        if(!(result.initialized)){
+            chrome.storage.sync.set({"initialized": true}, noop);
+            var savedRoutes = localStorage.getItem("savedRoutes");
+            if (savedRoutes) {
+                chrome.storage.sync.set({"savedRoutes": savedRoutes}, noop);
+            }
+        }
+    });
 }
 
 function registerEvents() {
@@ -25,7 +35,7 @@ function registerEvents() {
         document.getElementById("busNumber").addEventListener("click", resetToBlackColorInput);
         document.getElementById("busStopCode").addEventListener("click", resetToBlackColorInput);
         registerChromeSyncCallback();
-        openBusTimesTab();
+        openBusTimesTabNoRefresh();
     });
 }
 
@@ -52,7 +62,7 @@ function localizeHtmlPage()
 function registerChromeSyncCallback(){
     chrome.storage.onChanged.addListener(function(changes, namespace) {
         var newValue = changes["savedRoutes"]
-        if(newValue !== "undefined"){
+        if(newValue){
             localStorage.setItem("savedRoutes", newValue.newValue);
         }
     });
@@ -187,10 +197,10 @@ function refreshBusRoutesTable() {
                     liveImg = document.createElement("img");
                     if (data.horaires[i].ntr) {
                         liveImg.src = "img/live.png";
-                        liveImg.title = "Realtime";
+                        liveImg.title = chrome.i18n.getMessage("realtimeLabel");
                     } else {
                         liveImg.src = "img/clock.png";
-                        liveImg.title = "Scheduled";
+                        liveImg.title = chrome.i18n.getMessage("scheduledLabel");
                     }
                     liveImg.height = 20;
                     liveImg.width = 20;
@@ -267,10 +277,10 @@ function saveToLocalStorageAndSync(savedRoutes){
 
 function getSavedRoutesFromLocalStorage() {
     var savedRoutes = localStorage.getItem("savedRoutes");
-    if (savedRoutes == null) {
-        savedRoutes = new Array();
-    } else {
+    if (savedRoutes) {
         savedRoutes = JSON.parse(savedRoutes);
+    } else {
+        savedRoutes = new Array();
     }
     return savedRoutes;
 }
@@ -280,9 +290,13 @@ function getFormatedTodayDate() {
     return today.getFullYear().toString() + ("0" + today.getMonth()).slice(-2) + ("0" + today.getDate()).slice(-2);
 }
 
-function openBusTimesTab(event) {
+function openBusTimesTabNoRefresh(event) {
     $("#inputs").hide();
     $("#outputs").show();
+}
+
+function openBusTimesTab(event) {
+    openBusTimesTabNoRefresh();
     refreshBusRoutesTable();
 }
 

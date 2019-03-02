@@ -10,7 +10,6 @@
     <script language="javascript" src="/js/global.js"></script>
     <script type="text/javascript" src="/lib/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="/lib/jquery-ui.min.js"></script>
-    <script language='javascript' src='/js/popup.js'></script>
 </head>
 <title>ChRomeTC</title>
 
@@ -29,27 +28,27 @@
     </ul>
     <div id="inputs">
         <form>
-            <h4> Add new saved route</h4>
-            Bus number:<br>
-            <input type="number" style="width:50%" class="form-input" id="busNumber"><br> Bus stop code:<br>
+            <h4>__MSG_addNewSavedRouteLabel__</h4>
+            __MSG_busNumberLabel__:<br>
+            <input type="number" style="width:50%" class="form-input" id="busNumber"><br>__MSG_busStopCodeLabel__:<br>
             <input type="number" style="width:50%" class="form-input" id="busStopCode"><br> Direction:
             <br>
             <select id="busDirection" style="width:50%" class="form-select">
-            <option>North</option>
-            <option>South</option>
-            <option>East</option>
-            <option>West</option>
+            <option value="North">__MSG_northLabel__</option>
+            <option value="South">__MSG_southLabel__</option>
+            <option value="East">__MSG_eastLabel__</option>
+            <option value="West">__MSG_westLabel__</option>
         </select>
             <input id="saveButton" type="button" class="form-input" value="Save"><br>
             <div id="errorMessage" hidden=true style="color: #ff0000">
-                Invalid or duplicate route.
+                __MSG_invalidRouteLabel__
             </div>
         </form>
         <table class="table" id="savedRoutes">
             <thead>
                 <th/>
-                <th><img src="img/bus_number.png" style="width:20px;height:20px;" title="Bus number"></th>
-                <th><img src="img/bus_stop.png" style="width:20px;height:20px;" title="Bus stop description and number"></th>
+                <th><img src="img/bus_number.png" style="width:20px;height:20px;" title="__MSG_busNumberLabel__"></th>
+                <th><img src="img/bus_stop.png" style="width:20px;height:20px;" title="__MSG_busDescriptionAndNumberLabel__"></th>
                 <th><img src="img/compass.png" style="width:20px;height:20px;" title="Direction"></th>
             </thead>
         </table>
@@ -57,10 +56,10 @@
     <div id="outputs">
         <table class="table" id="tableOutput">
             <thead>
-                <th><img src="img/bus_number.png" style="width:20px;height:20px;" title="Bus number"></th>
-                <th><img src="img/bus_stop.png" style="width:20px;height:20px;" title="Bus stop description and number"></th>
+                <th><img src="img/bus_number.png" style="width:20px;height:20px;" title="__MSG_busNumberLabel__"></th>
+                <th><img src="img/bus_stop.png" style="width:20px;height:20px;" title="__MSG_busDescriptionAndNumberLabel__"></th>
                 <th><img src="img/compass.png" style="width:20px;height:20px;" title="Direction"></th>
-                <th><img src="img/clock.png" style="width:20px;height:20px;" title="Time of arrival"></th>
+                <th><img src="img/clock.png" style="width:20px;height:20px;" title="__MSG_timeOfArrivalLabel__"></th>
             </thead>
         </table>
         <form name='updateForm'>
