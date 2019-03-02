@@ -1,0 +1,48 @@
+{
+	"refreshAllButtonLabel": {
+		"message": "Refresh all"
+	},
+
+	"addNewSavedRouteLabel": {
+		"message": " Add new saved route"
+	},
+	"busNumberLabel": {
+		"message": "Bus number"
+	},
+	"busStopCodeLabel": {
+		"message": " Bus stop code"
+	},
+	"saveLabel": {
+		"message": "Save"
+	},
+	"northLabel": {
+		"message": "North"
+	},
+	"southLabel": {
+		"message": "South"
+	},
+	"eastLabel": {
+		"message": "East"
+	},
+	"westLabel": {
+		"message": "West"
+	},
+	"westShortLabel": {
+		"message": "W"
+	},
+	"invalidRouteLabel": {
+		"message": "Invalid or duplicate route."
+	},
+	"busDescriptionAndNumberLabel": {
+		"message": "Bus stop description and number"
+	},
+	"timeOfArrivalLabel": {
+		"message": "Time of arrival"
+	},
+	"realtimeLabel": {
+		"message": "Realtime"
+	},
+	"scheduledLabel": {
+		"message": "Scheduled"
+	}
+}

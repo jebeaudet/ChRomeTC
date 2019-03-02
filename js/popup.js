@@ -1,7 +1,29 @@
 start();
 
+var noop = function(){};
+
 function start() {
+    initialSyncWithChromeSync();
+	localizeHtmlPage();
     registerEvents();
+}
+
+function initialSyncWithChromeSync(){
+    chrome.storage.sync.get(["savedRoutes"], function(result) {
+        if(result.savedRoutes){
+            localStorage.setItem("savedRoutes", result.savedRoutes);
+        }
+        openBusTimesTab();
+    });
+    chrome.storage.sync.get(["initialized"], function(result) {
+        if(!(result.initialized)){
+            chrome.storage.sync.set({"initialized": true}, noop);
+            var savedRoutes = localStorage.getItem("savedRoutes");
+            if (savedRoutes) {
+                chrome.storage.sync.set({"savedRoutes": savedRoutes}, noop);
+            }
+        }
+    });
 }
 
 function registerEvents() {
@@ -12,7 +34,37 @@ function registerEvents() {
         document.getElementById("saveButton").addEventListener("click", saveButtonAction);
         document.getElementById("busNumber").addEventListener("click", resetToBlackColorInput);
         document.getElementById("busStopCode").addEventListener("click", resetToBlackColorInput);
-        openBusTimesTab();
+        registerChromeSyncCallback();
+        openBusTimesTabNoRefresh();
+    });
+}
+
+function localizeHtmlPage()
+{
+    var objects = document.getElementsByTagName('html');
+    for (var j = 0; j < objects.length; j++)
+    {
+        var obj = objects[j];
+
+        var valStrH = obj.innerHTML.toString();
+        var valNewH = valStrH.replace(/__MSG_(\w+)__/g, function(match, v1)
+        {
+            return v1 ? chrome.i18n.getMessage(v1) : "";
+        });
+
+        if(valNewH != valStrH)
+        {
+            obj.innerHTML = valNewH;
+        }
+    }
+}
+
+function registerChromeSyncCallback(){
+    chrome.storage.onChanged.addListener(function(changes, namespace) {
+        var newValue = changes["savedRoutes"]
+        if(newValue){
+            localStorage.setItem("savedRoutes", newValue.newValue);
+        }
     });
 }
 
@@ -34,7 +86,7 @@ function saveButtonAction() {
         document.getElementById("busStopCode").style.color = "#000000";
         var savedRoutes = getSavedRoutesFromLocalStorage();
         savedRoutes.push(newSavedRoute);
-        localStorage.setItem("savedRoutes", JSON.stringify(savedRoutes));
+        saveToLocalStorageAndSync(savedRoutes);
         populateSavedRoutesTable();
         resetInputs();
     } else {
@@ -145,10 +197,10 @@ function refreshBusRoutesTable() {
                     liveImg = document.createElement("img");
                     if (data.horaires[i].ntr) {
                         liveImg.src = "img/live.png";
-                        liveImg.title = "Realtime";
+                        liveImg.title = chrome.i18n.getMessage("realtimeLabel");
                     } else {
                         liveImg.src = "img/clock.png";
-                        liveImg.title = "Scheduled";
+                        liveImg.title = chrome.i18n.getMessage("scheduledLabel");
                     }
                     liveImg.height = 20;
                     liveImg.width = 20;
@@ -213,16 +265,22 @@ function deleteSavedRoute() {
             break;
         }
     }
-    localStorage.setItem("savedRoutes", JSON.stringify(savedRoutes));
+    saveToLocalStorageAndSync(savedRoutes);
     populateSavedRoutesTable();
+}
+
+function saveToLocalStorageAndSync(savedRoutes){
+    var routesAsString = JSON.stringify(savedRoutes);
+    localStorage.setItem("savedRoutes", routesAsString);
+    chrome.storage.sync.set({"savedRoutes": routesAsString}, noop);
 }
 
 function getSavedRoutesFromLocalStorage() {
     var savedRoutes = localStorage.getItem("savedRoutes");
-    if (savedRoutes == undefined) {
-        savedRoutes = new Array();
-    } else {
+    if (savedRoutes) {
         savedRoutes = JSON.parse(savedRoutes);
+    } else {
+        savedRoutes = new Array();
     }
     return savedRoutes;
 }
@@ -232,9 +290,13 @@ function getFormatedTodayDate() {
     return today.getFullYear().toString() + ("0" + today.getMonth()).slice(-2) + ("0" + today.getDate()).slice(-2);
 }
 
-function openBusTimesTab(event) {
+function openBusTimesTabNoRefresh(event) {
     $("#inputs").hide();
     $("#outputs").show();
+}
+
+function openBusTimesTab(event) {
+    openBusTimesTabNoRefresh();
     refreshBusRoutesTable();
 }
 
