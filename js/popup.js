@@ -3,12 +3,14 @@ start();
 var noop = function(){};
 
 function start() {
+    initializeLoadingCallbacks();
     initialSyncWithChromeSync();
     localizeHtmlPage();
     registerEvents();
 }
 
 function initialSyncWithChromeSync(){
+    $("#loading").show();
     chrome.storage.sync.get(["savedRoutes"], function(result) {
         if(result.savedRoutes){
             localStorage.setItem("savedRoutes", result.savedRoutes);
@@ -35,7 +37,6 @@ function registerEvents() {
         document.getElementById("busNumber").addEventListener("click", resetToBlackColorInput);
         document.getElementById("busStopCode").addEventListener("click", resetToBlackColorInput);
         registerChromeSyncCallback();
-        initializeLoadingCallbacks();
         openBusTimesTabNoRefresh();
     });
 }
@@ -66,8 +67,6 @@ function registerChromeSyncCallback(){
         if(newValue){
             localStorage.setItem("savedRoutes", newValue.newValue);
         }
-        initializeLoadingCallbacks();
-        openBusTimesTab();
     });
 }
 
@@ -171,6 +170,10 @@ function refreshBusRoutesTable() {
     clearTable("tableOutput");
 
     var savedRoutes = getSavedRoutesFromLocalStorage();
+
+    if (savedRoutes.length == 0) {
+        $("#loading").hide();
+    }
 
     for (i = 0; i < savedRoutes.length; i++) {
         var savedRoute = savedRoutes[i];
