@@ -1,3 +1,13 @@
+#loading {
+    position: relative;
+}
+#loading img {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width:60px;
+    height:60px;
+}
 /* Style the list */
 ul.tab {
     list-style-type: none;

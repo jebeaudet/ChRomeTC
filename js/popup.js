@@ -4,7 +4,7 @@ var noop = function(){};
 
 function start() {
     initialSyncWithChromeSync();
-	localizeHtmlPage();
+    localizeHtmlPage();
     registerEvents();
 }
 
@@ -35,6 +35,7 @@ function registerEvents() {
         document.getElementById("busNumber").addEventListener("click", resetToBlackColorInput);
         document.getElementById("busStopCode").addEventListener("click", resetToBlackColorInput);
         registerChromeSyncCallback();
+        initializeLoadingCallbacks();
         openBusTimesTabNoRefresh();
     });
 }
@@ -65,6 +66,17 @@ function registerChromeSyncCallback(){
         if(newValue){
             localStorage.setItem("savedRoutes", newValue.newValue);
         }
+        initializeLoadingCallbacks();
+        openBusTimesTab();
+    });
+}
+
+function initializeLoadingCallbacks() {
+    $(document).ajaxStop(function () {
+        $("#loading").hide();
+    });
+    $(document).ajaxStart(function () {
+        $("#loading").show();
     });
 }
 
