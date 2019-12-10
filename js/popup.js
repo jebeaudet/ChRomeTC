@@ -94,7 +94,7 @@ function validateRoute(newSavedRoute) {
 }
 
 function getUrlFromSavedRoute(savedRoute) {
-    return "https://wsmobile.rtcquebec.ca/api/v3/horaire/BorneVirtuelle_ArretParcours?source=sitemobile&noArret=" +
+    return "https://wssiteweb.rtcquebec.ca/api/v2/horaire/BorneVirtuelle_ArretParcours?noArret=" +
         savedRoute.stopCode +
         "&noParcours=" +
         savedRoute.busNumber +
@@ -229,7 +229,7 @@ function getSavedRoutesFromLocalStorage() {
 
 function getFormatedTodayDate() {
     var today = new Date();
-    return today.getFullYear().toString() + ("0" + today.getMonth()).slice(-2) + ("0" + today.getDate()).slice(-2);
+    return today.getFullYear().toString() + ("0" + (today.getMonth() + 1)).slice(-2) + ("0" + today.getDate()).slice(-2);
 }
 
 function openBusTimesTab(event) {

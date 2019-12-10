@@ -1,29 +1,25 @@
 {
 	"manifest_version": 2,
-
-	"name": "ChRomeTC",
+	"name": "FireTC for RTC Nomade",
+	"short_name": "FireTC",
 	"description": "Get the realtime delay before the next RTC bus arrives.",
-	"version": "1.0.4",
-
+	"version": "1.0.5",
 	"homepage_url": "https://github.com/jebeaudet/ChRomeTC",
-
 	"icons": {
-		"16": "img/bus_16x16.png",
-		"32": "img/bus_32x32.png",
-		"48": "img/bus_48x48.png",
-		"128": "img/bus_128x128.png"
+	"16": "img/bus_16x16.png",
+	"32": "img/bus_32x32.png",
+	"48": "img/bus_48x48.png",
+	"128": "img/bus_128x128.png"
 	},
-
 	"web_accessible_resources": [
-		"fonts/*.woff2"
+	"fonts/*.woff2"
 	],
-
 	"browser_action": {
-		"default_icon": "img/bus_512x512.png",
-		"default_popup": "popup.html"
+	"default_icon": "img/bus_512x512.png",
+	"default_popup": "popup.html"
 	},
-
 	"permissions": [
-		"storage"
-	]
-}
+	"storage"
+	],
+	"content_security_policy": "connect-src https://wssiteweb.rtcquebec.ca; style-src 'self' 'unsafe-inline'; default-src 'self';"
+	}
