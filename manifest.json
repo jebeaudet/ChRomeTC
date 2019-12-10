@@ -4,7 +4,7 @@
     "name": "ChRomeTC for RTC Nomade",
     "short_name": "ChRomeTC",
     "description": "Get the realtime delay before the next RTC bus arrives.",
-    "version": "1.2.3",
+    "version": "1.2.4",
 
     "homepage_url": "https://github.com/jebeaudet/ChRomeTC",
     
