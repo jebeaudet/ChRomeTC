@@ -157,7 +157,7 @@ function validateRoute(newSavedRoute) {
 }
 
 function getUrlFromSavedRoute(savedRoute) {
-    return "https://wsmobile.rtcquebec.ca/api/v3/horaire/BorneVirtuelle_ArretParcours?source=sitemobile&noArret=" +
+    return "https://wssiteweb.rtcquebec.ca/api/v2/horaire/BorneVirtuelle_ArretParcours?noArret=" +
         savedRoute.stopCode +
         "&noParcours=" +
         savedRoute.busNumber +

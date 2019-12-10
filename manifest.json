@@ -30,6 +30,6 @@
             "storage"
     ],
     
-    "content_security_policy" : "connect-src https://wsmobile.rtcquebec.ca; style-src 'self' 'unsafe-inline'; default-src 'self';"
+    "content_security_policy" : "connect-src https://wssiteweb.rtcquebec.ca; style-src 'self' 'unsafe-inline'; default-src 'self';"
 
 }
