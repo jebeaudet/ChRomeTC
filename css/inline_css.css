@@ -1,0 +1,8 @@
+#pluginWindow{padding: 5px 5 5 5}
+#bodyInline{min-width:400px;padding-left:10px;padding-right:10px}
+#icon30px{width:30px;height:30px;}
+#busNumber{width:50%}
+#busStopCode{width:50%}
+#busDirection{width:50%}
+#errorMessage{color: #ff0000}
+#icon20px{width:20px;height:20px;}
