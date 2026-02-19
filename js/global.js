@@ -1,7 +1,7 @@
 var codeToDirectionMap = new Map();
-codeToDirectionMap.set("0", "N");
-codeToDirectionMap.set("1", "S");
-codeToDirectionMap.set("2", "E");
+codeToDirectionMap.set("0", chrome.i18n.getMessage("northShortLabel"));
+codeToDirectionMap.set("1", chrome.i18n.getMessage("southShortLabel"));
+codeToDirectionMap.set("2", chrome.i18n.getMessage("eastShortLabel"));
 codeToDirectionMap.set("3", chrome.i18n.getMessage("westShortLabel"));
 
 var directionToCodeMap = new Map();

@@ -11,13 +11,10 @@ function start() {
 
 function initialSyncWithChromeSync() {
   $("#loading").show();
-  chrome.storage.sync.get(["savedRoutes"], function (result) {
+  chrome.storage.sync.get(["savedRoutes", "initialized"], function (result) {
     if (result.savedRoutes) {
       localStorage.setItem("savedRoutes", result.savedRoutes);
     }
-    openBusTimesTab();
-  });
-  chrome.storage.sync.get(["initialized"], function (result) {
     if (!result.initialized) {
       chrome.storage.sync.set({ initialized: true }, noop);
       var savedRoutes = localStorage.getItem("savedRoutes");
@@ -25,6 +22,7 @@ function initialSyncWithChromeSync() {
         chrome.storage.sync.set({ savedRoutes: savedRoutes }, noop);
       }
     }
+    openBusTimesTab();
   });
 }
 
@@ -63,7 +61,7 @@ function localizeHtmlPage() {
       return v1 ? chrome.i18n.getMessage(v1) : "";
     });
 
-    if (valNewH != valStrH) {
+    if (valNewH !== valStrH) {
       obj.innerHTML = valNewH;
     }
   }
@@ -91,20 +89,21 @@ function resetToBlackColorInput() {
   this.style.color = "#000000";
 }
 
-function saveButtonAction() {
+async function saveButtonAction() {
   $("#errorMessage").hide();
   var newSavedRoute = {
     stopCode: document.getElementById("busStopCode").value,
     busNumber: document.getElementById("busNumber").value,
     direction: document.getElementById("busDirection").value,
-    id: getGuid(),
+    id: crypto.randomUUID(),
   };
 
-  if (
+  var valid =
     validateInputs(newSavedRoute) &&
-    validateRoute(newSavedRoute) &&
-    validateDuplicate(newSavedRoute)
-  ) {
+    validateDuplicate(newSavedRoute) &&
+    (await validateRoute(newSavedRoute));
+
+  if (valid) {
     document.getElementById("busNumber").style.color = "#000000";
     document.getElementById("busStopCode").style.color = "#000000";
     var savedRoutes = getSavedRoutesFromLocalStorage();
@@ -129,12 +128,12 @@ function resetInputs() {
 function validateDuplicate(newSavedRoute) {
   var valid = true;
   var savedRoutes = getSavedRoutesFromLocalStorage();
-  for (i = 0; i < savedRoutes.length; i++) {
+  for (let i = 0; i < savedRoutes.length; i++) {
     var savedRoute = savedRoutes[i];
     if (
-      savedRoute.busNumber == newSavedRoute.busNumber &&
-      savedRoute.stopCode == newSavedRoute.stopCode &&
-      savedRoute.direction == newSavedRoute.direction
+      savedRoute.busNumber === newSavedRoute.busNumber &&
+      savedRoute.stopCode === newSavedRoute.stopCode &&
+      savedRoute.direction === newSavedRoute.direction
     ) {
       valid = false;
       break;
@@ -158,26 +157,21 @@ function validateInputs(newSavedRoute) {
 }
 
 function validateRoute(newSavedRoute) {
-  var valid = true;
-  jQuery.ajax({
-    url: getUrlFromSavedRoute(newSavedRoute),
-    error: function () {
-      valid = false;
-    },
-    success: function (data) {
-      if (!data || !data.parcours || !data.arret) {
-        valid = false;
-      }
-    },
-    async: false,
-  });
-
-  return valid;
+  return jQuery
+    .ajax({
+      url: getUrlFromSavedRoute(newSavedRoute),
+    })
+    .then(function (data) {
+      return !!(data && data.parcours && data.arret);
+    })
+    .catch(function () {
+      return false;
+    });
 }
 
 function getUrlFromSavedRoute(savedRoute) {
   return (
-    "https://wssiteweb.rtcquebec.ca/api/v2/horaire/BorneVirtuelle_ArretParcours?noArret=" +
+    "https://api-iv.rtcquebec.ca/api/legacy/BorneVirtuelle_ArretParcours?noArret=" +
     savedRoute.stopCode +
     "&noParcours=" +
     savedRoute.busNumber +
@@ -197,7 +191,7 @@ function refreshBusRoutesTable() {
     $("#loading").hide();
   }
 
-  for (i = 0; i < savedRoutes.length; i++) {
+  for (let i = 0; i < savedRoutes.length; i++) {
     var savedRoute = savedRoutes[i];
     var url = getUrlFromSavedRoute(savedRoute);
     $.get(
@@ -220,13 +214,13 @@ function refreshBusRoutesTable() {
               numberOfResult;
 
           numberTd.appendChild(
-            document.createTextNode(data.parcours.noParcours)
+            document.createTextNode(data.parcours.noParcours),
           );
           stopTd.appendChild(document.createTextNode(data.arret.nom));
           directionTd.appendChild(
             document.createTextNode(
-              codeToDirectionMap.get(data.parcours.codeDirection)
-            )
+              codeToDirectionMap.get(data.parcours.codeDirection),
+            ),
           );
 
           stopTd.title = data.arret.description;
@@ -236,16 +230,16 @@ function refreshBusRoutesTable() {
           tr.appendChild(stopTd);
           tr.appendChild(directionTd);
 
-          i = 0;
+          let j = 0;
           do {
             timeTd = document.createElement("TD");
 
             timeTd.appendChild(
-              document.createTextNode(data.horaires[i].departMinutes + "m ")
+              document.createTextNode(data.horaires[j].departMinutes + "m "),
             );
 
             liveImg = document.createElement("img");
-            if (data.horaires[i].ntr) {
+            if (data.horaires[j].ntr) {
               liveImg.src = "img/live.png";
               liveImg.title = chrome.i18n.getMessage("realtimeLabel");
             } else {
@@ -255,18 +249,20 @@ function refreshBusRoutesTable() {
             liveImg.height = 20;
             liveImg.width = 20;
             timeTd.appendChild(liveImg);
-            timeTd.title = data.horaires[i].depart;
+            timeTd.title = data.horaires[j].depart;
 
             tr.appendChild(timeTd);
 
             resultTable.appendChild(tr);
-            i++;
+            j++;
             tr = document.createElement("TR");
-          } while (i < numberOfResult);
+          } while (j < numberOfResult);
         }
       },
-      "json"
-    );
+      "json",
+    ).fail(function () {
+      console.warn("Failed to fetch route data");
+    });
   }
 }
 
@@ -276,7 +272,7 @@ function populateSavedRoutesTable() {
 
   if (savedRoutes.length > 0) {
     var resultTable = document.getElementById("savedRoutes");
-    for (i = 0; i < savedRoutes.length; i++) {
+    for (let i = 0; i < savedRoutes.length; i++) {
       var tr = document.createElement("TR");
 
       var numberTd = document.createElement("TD");
@@ -287,10 +283,10 @@ function populateSavedRoutesTable() {
       numberTd.appendChild(document.createTextNode(savedRoutes[i].busNumber));
       stopTd.appendChild(document.createTextNode(savedRoutes[i].stopCode));
       directionTd.appendChild(
-        document.createTextNode(savedRoutes[i].direction)
+        document.createTextNode(savedRoutes[i].direction),
       );
-      imgLink = document.createElement("a");
-      deleteImg = document.createElement("img");
+      const imgLink = document.createElement("a");
+      const deleteImg = document.createElement("img");
       deleteImg.src = "img/x.png";
       deleteImg.height = 20;
       deleteImg.width = 20;
@@ -312,8 +308,8 @@ function populateSavedRoutesTable() {
 
 function deleteSavedRoute() {
   var savedRoutes = getSavedRoutesFromLocalStorage();
-  for (i = 0; i < savedRoutes.length; i++) {
-    if (savedRoutes[i].id == this.id) {
+  for (let i = 0; i < savedRoutes.length; i++) {
+    if (savedRoutes[i].id === this.id) {
       savedRoutes.splice(i, 1);
       break;
     }
@@ -335,7 +331,7 @@ function getSavedRoutesFromLocalStorage() {
   }
 
   if (!savedRoutes) {
-    savedRoutes = new Array();
+    savedRoutes = [];
   }
   return savedRoutes;
 }
@@ -365,14 +361,6 @@ function openConfigTab(event) {
   populateSavedRoutesTable();
   resetInputs();
   $("#errorMessage").hide();
-}
-
-function getGuid() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0,
-      v = c == "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
 }
 
 function clearTable(tableId) {

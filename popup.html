@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html id="pluginWindow" style="padding: 5px 5 5 5">
+<html id="pluginWindow" style="padding: 5px">
 
 <head>
     <meta charset="utf-8"/>
@@ -7,15 +7,15 @@
     <link rel="stylesheet" type="text/css" href="css/siimple.min.css">
     <link rel="stylesheet" type="text/css" href="css/tab.css">
     <link rel="stylesheet" type="text/css" href="css/table.css">
-    <script language="javascript" src="/js/global.js"></script>
-    <script type="text/javascript" src="/lib/jquery-3.3.1.min.js"></script>
+    <title>ChRomeTC</title>
+    <script src="/js/global.js"></script>
+    <script type="text/javascript" src="/lib/jquery-3.7.1.min.js"></script>
     <script type="text/javascript" src="/lib/jquery-ui.min.js"></script>
 </head>
-<title>ChRomeTC</title>
 
 <body style="min-width:400px;padding-left:10px;padding-right:10px">
     <ul class="tab">
-        <div id="loading" hidden=true>
+        <div id="loading" hidden>
             <img src="img/loading.gif" class="ribbon"/>
         </div>
         <li id="busTimesTab">
@@ -43,13 +43,13 @@
             <option value="West">__MSG_westLabel__</option>
         </select>
             <input id="saveButton" type="button" class="form-input" value="Save"><br>
-            <div id="errorMessage" hidden=true style="color: #ff0000">
+            <div id="errorMessage" hidden style="color: #ff0000">
                 __MSG_invalidRouteLabel__
             </div>
         </form>
         <table class="table" id="savedRoutes">
             <thead>
-                <th/>
+                <th></th>
                 <th><img src="img/bus_number.png" style="width:20px;height:20px;" title="__MSG_busNumberLabel__"></th>
                 <th><img src="img/bus_stop.png" style="width:20px;height:20px;" title="__MSG_busDescriptionAndNumberLabel__"></th>
                 <th><img src="img/compass.png" style="width:20px;height:20px;" title="Direction"></th>
@@ -68,7 +68,8 @@
         <form name='updateForm'>
             <input type='button' class="btn btn-small" id='refreshAllButton' value='__MSG_refreshAllButtonLabel__'>
         </form>
-		<script language='javascript' src='/js/popup.js'></script>
+		<script src='/js/popup.js'></script>
+    </div>
 </body>
 
 </html>
