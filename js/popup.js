@@ -148,7 +148,7 @@ async function saveButtonAction() {
 function resetInputs() {
   $("#busNumber").val("");
   $("#busStopCode").val("");
-  $("#busDirection").val("North");
+  $("#busDirection").val("0");
 }
 
 function validateDuplicate(newSavedRoute) {
@@ -202,7 +202,7 @@ function getUrlFromSavedRoute(savedRoute) {
     "&noParcours=" +
     savedRoute.busNumber +
     "&codeDirection=" +
-    directionToCodeMap.get(savedRoute.direction) +
+    savedRoute.direction +
     "&date=" +
     getFormatedTodayDate()
   );
