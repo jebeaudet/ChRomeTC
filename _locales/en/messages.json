@@ -15,30 +15,6 @@
 	"saveLabel": {
 		"message": "Save"
 	},
-	"northLabel": {
-		"message": "North"
-	},
-	"southLabel": {
-		"message": "South"
-	},
-	"eastLabel": {
-		"message": "East"
-	},
-	"westLabel": {
-		"message": "West"
-	},
-	"westShortLabel": {
-		"message": "W"
-	},
-	"northShortLabel": {
-		"message": "N"
-	},
-	"southShortLabel": {
-		"message": "S"
-	},
-	"eastShortLabel": {
-		"message": "E"
-	},
 	"invalidRouteLabel": {
 		"message": "Invalid or duplicate route."
 	},
