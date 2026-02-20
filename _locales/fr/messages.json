@@ -4,31 +4,16 @@
 	},
 
 	"addNewSavedRouteLabel": {
-		"message": " Ajouter un nouveau parcours"
+		"message": "Ajouter un nouveau parcours"
 	},
 	"busNumberLabel": {
 		"message": "Numéro de parcours"
 	},
 	"busStopCodeLabel": {
-		"message": " Numéro d'arrêt"
+		"message": "Numéro d'arrêt"
 	},
 	"saveLabel": {
 		"message": "Sauvegarder"
-	},
-	"northLabel": {
-		"message": "Nord"
-	},
-	"southLabel": {
-		"message": "Sud"
-	},
-	"eastLabel": {
-		"message": "Est"
-	},
-	"westLabel": {
-		"message": "Ouest"
-	},
-	"westShortLabel": {
-		"message": "O"
 	},
 	"invalidRouteLabel": {
 		"message": "Parcours invalide ou dupliqué."
@@ -44,5 +29,17 @@
 	},
 	"scheduledLabel": {
 		"message": "Heure prévue"
+	},
+	"routesResetLabel": {
+		"message": "Vos parcours sauvegardés ont été réinitialisés suite à une mise à jour. Veuillez les ajouter à nouveau."
+	},
+	"nextLabel": {
+		"message": "Suivant"
+	},
+	"backLabel": {
+		"message": "Retour"
+	},
+	"directionLabel": {
+		"message": "Direction"
 	}
 }

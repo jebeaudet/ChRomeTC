@@ -4,31 +4,16 @@
 	},
 
 	"addNewSavedRouteLabel": {
-		"message": " Add new saved route"
+		"message": "Add new saved route"
 	},
 	"busNumberLabel": {
 		"message": "Bus number"
 	},
 	"busStopCodeLabel": {
-		"message": " Bus stop code"
+		"message": "Bus stop code"
 	},
 	"saveLabel": {
 		"message": "Save"
-	},
-	"northLabel": {
-		"message": "North"
-	},
-	"southLabel": {
-		"message": "South"
-	},
-	"eastLabel": {
-		"message": "East"
-	},
-	"westLabel": {
-		"message": "West"
-	},
-	"westShortLabel": {
-		"message": "W"
 	},
 	"invalidRouteLabel": {
 		"message": "Invalid or duplicate route."
@@ -44,5 +29,17 @@
 	},
 	"scheduledLabel": {
 		"message": "Scheduled"
+	},
+	"routesResetLabel": {
+		"message": "Your saved routes were reset due to an update. Please re-add your routes."
+	},
+	"nextLabel": {
+		"message": "Next"
+	},
+	"backLabel": {
+		"message": "Back"
+	},
+	"directionLabel": {
+		"message": "Direction"
 	}
 }

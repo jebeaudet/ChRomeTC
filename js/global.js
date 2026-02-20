@@ -1,11 +1,1 @@
-var codeToDirectionMap = new Map();
-codeToDirectionMap.set("0", "N");
-codeToDirectionMap.set("1", "S");
-codeToDirectionMap.set("2", "E");
-codeToDirectionMap.set("3", chrome.i18n.getMessage("westShortLabel"));
-
-var directionToCodeMap = new Map();
-directionToCodeMap.set("North", 0);
-directionToCodeMap.set("South", 1);
-directionToCodeMap.set("East", 2);
-directionToCodeMap.set("West", 3);
+var SAVED_ROUTES_VERSION = 2;

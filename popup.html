@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html id="pluginWindow" style="padding: 5px 5 5 5">
+<html id="pluginWindow" style="padding: 5px">
 
 <head>
     <meta charset="utf-8"/>
@@ -7,15 +7,15 @@
     <link rel="stylesheet" type="text/css" href="css/siimple.min.css">
     <link rel="stylesheet" type="text/css" href="css/tab.css">
     <link rel="stylesheet" type="text/css" href="css/table.css">
-    <script language="javascript" src="/js/global.js"></script>
-    <script type="text/javascript" src="/lib/jquery-3.3.1.min.js"></script>
+    <title>ChRomeTC</title>
+    <script src="/js/global.js"></script>
+    <script type="text/javascript" src="/lib/jquery-3.7.1.min.js"></script>
     <script type="text/javascript" src="/lib/jquery-ui.min.js"></script>
 </head>
-<title>ChRomeTC</title>
 
 <body style="min-width:400px;padding-left:10px;padding-right:10px">
     <ul class="tab">
-        <div id="loading" hidden=true>
+        <div id="loading" hidden>
             <img src="img/loading.gif" class="ribbon"/>
         </div>
         <li id="busTimesTab">
@@ -32,31 +32,43 @@
     <div id="inputs">
         <form>
             <h4>__MSG_addNewSavedRouteLabel__</h4>
-            __MSG_busNumberLabel__:<br>
-            <input type="number" style="width:50%" class="form-input" id="busNumber"><br>__MSG_busStopCodeLabel__:<br>
-            <input type="number" style="width:50%" class="form-input" id="busStopCode"><br> Direction:
-            <br>
-            <select id="busDirection" style="width:50%" class="form-select">
-            <option value="North">__MSG_northLabel__</option>
-            <option value="South">__MSG_southLabel__</option>
-            <option value="East">__MSG_eastLabel__</option>
-            <option value="West">__MSG_westLabel__</option>
-        </select>
-            <input id="saveButton" type="button" class="form-input" value="Save"><br>
-            <div id="errorMessage" hidden=true style="color: #ff0000">
+            <div id="step1">
+                __MSG_busNumberLabel__:<br>
+                <input type="number" style="width:50%" class="form-input" id="busNumber"><br>
+                <input id="nextStep1Button" type="button" class="form-input" value="__MSG_nextLabel__"><br>
+            </div>
+            <div id="step2" hidden>
+                __MSG_directionLabel__:<br>
+                <select id="busDirection" style="width:80%" class="form-select"></select><br>
+                <input id="nextStep2Button" type="button" class="form-input" value="__MSG_nextLabel__">
+                <input id="backStep2Button" type="button" class="form-input" value="__MSG_backLabel__"><br>
+            </div>
+            <div id="step3" hidden>
+                __MSG_busStopCodeLabel__:<br>
+                <input type="number" style="width:50%" class="form-input" id="busStopCode"><br>
+                <input id="saveButton" type="button" class="form-input" value="Save">
+                <input id="backStep3Button" type="button" class="form-input" value="__MSG_backLabel__"><br>
+            </div>
+            <div id="errorMessage" hidden style="color: #ff0000">
                 __MSG_invalidRouteLabel__
             </div>
         </form>
         <table class="table" id="savedRoutes">
             <thead>
-                <th/>
+                <th></th>
+                <th></th>
                 <th><img src="img/bus_number.png" style="width:20px;height:20px;" title="__MSG_busNumberLabel__"></th>
                 <th><img src="img/bus_stop.png" style="width:20px;height:20px;" title="__MSG_busDescriptionAndNumberLabel__"></th>
                 <th><img src="img/compass.png" style="width:20px;height:20px;" title="Direction"></th>
             </thead>
+            <tbody id="savedRoutesBody"></tbody>
         </table>
     </div>
     <div id="outputs">
+        <div id="migrationBanner" hidden style="background-color:#fff3cd;color:#856404;border:1px solid #ffc107;border-radius:4px;padding:8px 12px;margin-bottom:8px;justify-content:space-between;align-items:center;font-size:13px">
+            <span>__MSG_routesResetLabel__</span>
+            <a id="dismissMigrationBanner" href="#" style="margin-left:10px;font-weight:bold;text-decoration:none;color:#856404">&times;</a>
+        </div>
         <table class="table" id="tableOutput">
             <thead>
                 <th><img src="img/bus_number.png" style="width:20px;height:20px;" title="__MSG_busNumberLabel__"></th>
@@ -68,7 +80,8 @@
         <form name='updateForm'>
             <input type='button' class="btn btn-small" id='refreshAllButton' value='__MSG_refreshAllButtonLabel__'>
         </form>
-		<script language='javascript' src='/js/popup.js'></script>
+		<script src='/js/popup.js'></script>
+    </div>
 </body>
 
 </html>
