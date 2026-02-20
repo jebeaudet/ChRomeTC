@@ -53,5 +53,8 @@
 	},
 	"scheduledLabel": {
 		"message": "Scheduled"
+	},
+	"routesResetLabel": {
+		"message": "Your saved routes were reset due to an update. Please re-add your routes."
 	}
 }

@@ -53,5 +53,8 @@
 	},
 	"scheduledLabel": {
 		"message": "Heure prévue"
+	},
+	"routesResetLabel": {
+		"message": "Vos parcours sauvegardés ont été réinitialisés suite à une mise à jour. Veuillez les ajouter à nouveau."
 	}
 }

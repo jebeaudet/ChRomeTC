@@ -9,3 +9,5 @@ directionToCodeMap.set("North", 0);
 directionToCodeMap.set("South", 1);
 directionToCodeMap.set("East", 2);
 directionToCodeMap.set("West", 3);
+
+var SAVED_ROUTES_VERSION = 2;

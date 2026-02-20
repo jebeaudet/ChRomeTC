@@ -11,19 +11,37 @@ function start() {
 
 function initialSyncWithChromeSync() {
   $("#loading").show();
-  chrome.storage.sync.get(["savedRoutes", "initialized"], function (result) {
-    if (result.savedRoutes) {
-      localStorage.setItem("savedRoutes", result.savedRoutes);
-    }
-    if (!result.initialized) {
-      chrome.storage.sync.set({ initialized: true }, noop);
-      var savedRoutes = localStorage.getItem("savedRoutes");
-      if (savedRoutes) {
-        chrome.storage.sync.set({ savedRoutes: savedRoutes }, noop);
+  chrome.storage.sync.get(
+    ["savedRoutes", "initialized", "savedRoutesVersion"],
+    function (result) {
+      var version = result.savedRoutesVersion;
+      if (!version || version < SAVED_ROUTES_VERSION) {
+        // Discard saved routes from older or unversioned storage
+        localStorage.removeItem("savedRoutes");
+        localStorage.setItem("routesWereReset", "true");
+        chrome.storage.sync.set(
+          {
+            savedRoutes: "[]",
+            initialized: true,
+            savedRoutesVersion: SAVED_ROUTES_VERSION,
+          },
+          noop,
+        );
+      } else {
+        if (result.savedRoutes) {
+          localStorage.setItem("savedRoutes", result.savedRoutes);
+        }
+        if (!result.initialized) {
+          chrome.storage.sync.set({ initialized: true }, noop);
+          var savedRoutes = localStorage.getItem("savedRoutes");
+          if (savedRoutes) {
+            chrome.storage.sync.set({ savedRoutes: savedRoutes }, noop);
+          }
+        }
       }
-    }
-    openBusTimesTab();
-  });
+      openBusTimesTab();
+    },
+  );
 }
 
 function registerEvents() {
@@ -46,7 +64,15 @@ function registerEvents() {
     document
       .getElementById("busStopCode")
       .addEventListener("click", resetToBlackColorInput);
+    document
+      .getElementById("dismissMigrationBanner")
+      .addEventListener("click", function (e) {
+        e.preventDefault();
+        $("#migrationBanner").hide();
+        localStorage.removeItem("routesWereReset");
+      });
     registerChromeSyncCallback();
+    showMigrationBannerIfNeeded();
     openBusTimesTabNoRefresh();
   });
 }
@@ -321,7 +347,10 @@ function deleteSavedRoute() {
 function saveToLocalStorageAndSync(savedRoutes) {
   var routesAsString = JSON.stringify(savedRoutes);
   localStorage.setItem("savedRoutes", routesAsString);
-  chrome.storage.sync.set({ savedRoutes: routesAsString }, noop);
+  chrome.storage.sync.set(
+    { savedRoutes: routesAsString, savedRoutesVersion: SAVED_ROUTES_VERSION },
+    noop,
+  );
 }
 
 function getSavedRoutesFromLocalStorage() {
@@ -343,6 +372,12 @@ function getFormatedTodayDate() {
     ("0" + (today.getMonth() + 1)).slice(-2) +
     ("0" + today.getDate()).slice(-2)
   );
+}
+
+function showMigrationBannerIfNeeded() {
+  if (localStorage.getItem("routesWereReset") === "true") {
+    $("#migrationBanner").css("display", "flex").removeAttr("hidden");
+  }
 }
 
 function openBusTimesTabNoRefresh(event) {
