@@ -32,15 +32,23 @@
     <div id="inputs">
         <form>
             <h4>__MSG_addNewSavedRouteLabel__</h4>
-            __MSG_busNumberLabel__:<br>
-            <input type="number" style="width:50%" class="form-input" id="busNumber"><br>__MSG_busStopCodeLabel__:<br>
-            <input type="number" style="width:50%" class="form-input" id="busStopCode"><br> Direction:
-            <br>
-            <select id="busDirection" style="width:50%" class="form-select">
-            <option value="0">0</option>
-            <option value="1">1</option>
-        </select>
-            <input id="saveButton" type="button" class="form-input" value="Save"><br>
+            <div id="step1">
+                __MSG_busNumberLabel__:<br>
+                <input type="number" style="width:50%" class="form-input" id="busNumber"><br>
+                <input id="nextStep1Button" type="button" class="form-input" value="__MSG_nextLabel__"><br>
+            </div>
+            <div id="step2" hidden>
+                __MSG_directionLabel__:<br>
+                <select id="busDirection" style="width:80%" class="form-select"></select><br>
+                <input id="nextStep2Button" type="button" class="form-input" value="__MSG_nextLabel__">
+                <input id="backStep2Button" type="button" class="form-input" value="__MSG_backLabel__"><br>
+            </div>
+            <div id="step3" hidden>
+                __MSG_busStopCodeLabel__:<br>
+                <input type="number" style="width:50%" class="form-input" id="busStopCode"><br>
+                <input id="saveButton" type="button" class="form-input" value="Save">
+                <input id="backStep3Button" type="button" class="form-input" value="__MSG_backLabel__"><br>
+            </div>
             <div id="errorMessage" hidden style="color: #ff0000">
                 __MSG_invalidRouteLabel__
             </div>

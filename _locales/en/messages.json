@@ -56,5 +56,14 @@
 	},
 	"routesResetLabel": {
 		"message": "Your saved routes were reset due to an update. Please re-add your routes."
+	},
+	"nextLabel": {
+		"message": "Next"
+	},
+	"backLabel": {
+		"message": "Back"
+	},
+	"directionLabel": {
+		"message": "Direction"
 	}
 }
