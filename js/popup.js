@@ -229,7 +229,7 @@ function refreshBusRoutesTable() {
 
           var tr = document.createElement("TR");
           var resultTable = document.getElementById("tableOutput");
-          var numberOfResult = data.horaires.length;
+          var numberOfResult = Math.min(data.horaires.length, 3);
 
           var numberTd = document.createElement("TD");
           var stopTd = document.createElement("TD");
@@ -243,14 +243,13 @@ function refreshBusRoutesTable() {
             document.createTextNode(data.parcours.noParcours),
           );
           stopTd.appendChild(document.createTextNode(data.arret.nom));
-          directionTd.appendChild(
-            document.createTextNode(
-              codeToDirectionMap.get(data.parcours.codeDirection),
-            ),
-          );
+
+          var directionText = data.parcours.descriptionDirection || "";
+          directionTd.appendChild(document.createTextNode(directionText));
+          directionTd.title = directionText;
+          directionTd.className = "direction-cell";
 
           stopTd.title = data.arret.description;
-          directionTd.title = data.parcours.descriptionDirection;
 
           tr.appendChild(numberTd);
           tr.appendChild(stopTd);
@@ -259,6 +258,7 @@ function refreshBusRoutesTable() {
           let j = 0;
           do {
             timeTd = document.createElement("TD");
+            timeTd.style.whiteSpace = "nowrap";
 
             timeTd.appendChild(
               document.createTextNode(data.horaires[j].departMinutes + "m "),
