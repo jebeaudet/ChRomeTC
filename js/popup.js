@@ -404,13 +404,20 @@ function refreshBusRoutesTable() {
 }
 
 function populateSavedRoutesTable() {
-  clearTable("savedRoutes");
+  var tbody = document.getElementById("savedRoutesBody");
+  tbody.innerHTML = "";
   var savedRoutes = getSavedRoutesFromLocalStorage();
 
   if (savedRoutes.length > 0) {
-    var resultTable = document.getElementById("savedRoutes");
     for (let i = 0; i < savedRoutes.length; i++) {
       var tr = document.createElement("TR");
+      tr.setAttribute("data-route-id", savedRoutes[i].id);
+
+      var dragTd = document.createElement("TD");
+      dragTd.className = "drag-handle";
+      dragTd.appendChild(document.createTextNode("\u2630"));
+      dragTd.style.cursor = "grab";
+      dragTd.title = "Drag to reorder";
 
       var numberTd = document.createElement("TD");
       var stopTd = document.createElement("TD");
@@ -435,14 +442,36 @@ function populateSavedRoutesTable() {
       deleteButtonTd.id = savedRoutes[i].id;
       deleteButtonTd.addEventListener("click", deleteSavedRoute);
 
+      tr.appendChild(dragTd);
       tr.appendChild(deleteButtonTd);
       tr.appendChild(numberTd);
       tr.appendChild(stopTd);
       tr.appendChild(directionTd);
 
-      resultTable.appendChild(tr);
+      tbody.appendChild(tr);
     }
   }
+
+  $("#savedRoutesBody").sortable({
+    axis: "y",
+    handle: ".drag-handle",
+    cursor: "grabbing",
+    update: function () {
+      var newOrder = [];
+      var savedRoutes = getSavedRoutesFromLocalStorage();
+      var routeMap = {};
+      for (var i = 0; i < savedRoutes.length; i++) {
+        routeMap[savedRoutes[i].id] = savedRoutes[i];
+      }
+      $("#savedRoutesBody tr").each(function () {
+        var id = $(this).attr("data-route-id");
+        if (routeMap[id]) {
+          newOrder.push(routeMap[id]);
+        }
+      });
+      saveToLocalStorageAndSync(newOrder);
+    },
+  });
 }
 
 function deleteSavedRoute() {
